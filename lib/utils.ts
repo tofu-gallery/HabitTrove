@@ -1,3 +1,5 @@
+// Modified by Tofu on 2026-10-28: playSound makes its chime instead of playing
+// a sound file of unknown source (see TOFU.md).
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { DateTime, DateTimeFormatOptions } from "luxon"
@@ -421,11 +423,39 @@ export function getUnsupportedRRuleReason(rrule: RRule): string | null {
 
 
 // play sound (client side only, must be run in browser)
-export const playSound = (soundPath: string = '/sounds/timer-end.wav') => {
-  const audio = new Audio(soundPath)
-  audio.play().catch(error => {
+// Tofu: upstream played public/sounds/timer-end.wav, a recording whose source
+// and licence are not stated; a short two-note chime is made here instead.
+export const playSound = (soundPath?: string) => {
+  if (soundPath) {
+    const audio = new Audio(soundPath)
+    audio.play().catch(error => {
+      console.error('Error playing sound:', error)
+    })
+    return
+  }
+  try {
+    const AudioContextClass = window.AudioContext
+      ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+    if (!AudioContextClass) return
+    const context = new AudioContextClass()
+    const notes = [880, 1318.5]
+    notes.forEach((frequency, index) => {
+      const start = context.currentTime + index * 0.12
+      const oscillator = context.createOscillator()
+      const gain = context.createGain()
+      oscillator.type = 'sine'
+      oscillator.frequency.value = frequency
+      gain.gain.setValueAtTime(0.0001, start)
+      gain.gain.exponentialRampToValueAtTime(0.2, start + 0.02)
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.35)
+      oscillator.connect(gain).connect(context.destination)
+      oscillator.start(start)
+      oscillator.stop(start + 0.4)
+    })
+    setTimeout(() => context.close().catch(() => undefined), 1000)
+  } catch (error) {
     console.error('Error playing sound:', error)
-  })
+  }
 }
 
 // open a new window (client side only, must be run in browser)
