@@ -1,3 +1,6 @@
+// Modified by Tofu on 2026-10-28: no service worker (public/sw.js only showed
+// push notifications, which a copy on Tofu never sends), and a home-screen
+// icon for iPhones (see TOFU.md).
 import './globals.css'
 import { DM_Sans } from 'next/font/google'
 import { JotaiProvider } from '@/components/jotai-providers'
@@ -30,6 +33,9 @@ const activeFont = dmSans
 export const metadata = {
   title: 'HabitTrove',
   description: 'Track your habits and get rewarded',
+  icons: {
+    apple: '/icons/web-app-manifest-192x192.png',
+  },
 }
 
 export const dynamic = 'force-dynamic' // needed to prevent nextjs from caching the load... functions in Layout component
@@ -57,23 +63,6 @@ export default async function RootLayout({
     // set suppressHydrationWarning to true to prevent hydration errors when using ThemeProvider (https://ui.shadcn.com/docs/dark-mode/next)
     <html lang={locale} suppressHydrationWarning>
       <body className={activeFont.className}>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                      console.log('ServiceWorker registration successful');
-                    })
-                    .catch(err => {
-                      console.log('ServiceWorker registration failed: ', err);
-                    });
-                });
-              }
-            `,
-          }}
-        />
         <JotaiProvider>
           <Suspense fallback={<LoadingSpinner />}>
             <JotaiHydrate

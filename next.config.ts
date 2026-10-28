@@ -1,9 +1,21 @@
+// Modified by Tofu on 2026-10-28: no service worker headers (public/sw.js is
+// gone), avatars up to 3 MB reach the upload action, and CHANGELOG.md, which the
+// About dialog reads, is traced into the server build (see TOFU.md).
 import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const nextConfig: NextConfig = {
   /* config options here */
   output: 'standalone',
+  experimental: {
+    serverActions: {
+      // Tofu: an avatar of up to 3 MB (lib/avatar.ts) plus the form around it.
+      bodySizeLimit: '4mb',
+    },
+  },
+  outputFileTracingIncludes: {
+    '/*': ['./CHANGELOG.md'],
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.md$/,
@@ -28,23 +40,6 @@ const nextConfig: NextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
-          },
-        ],
-      },
-      {
-        source: '/sw.js',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/javascript; charset=utf-8',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate',
-          },
-          {
-            key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self'",
           },
         ],
       },
