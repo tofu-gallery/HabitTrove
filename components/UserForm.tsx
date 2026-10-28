@@ -1,7 +1,7 @@
 // Modified by Tofu on 2026-10-28: every account has a password (no "Disable
 // password" switch), the account that signs in with HABITTROVE_ADMIN_PASSWORD
-// says so instead of offering a new password, and avatars are at most 3 MB
-// (see TOFU.md).
+// says so instead of offering a new password and offers no "Delete Account",
+// the buttons wrap on a narrow phone, and avatars are at most 3 MB (see TOFU.md).
 'use client';
 
 import { useState } from 'react';
@@ -348,8 +348,8 @@ export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps)
 
       </div>
 
-      <div className="flex justify-end gap-2 pt-2">
-        {isEditing && (
+      <div className="flex flex-wrap justify-end gap-2 pt-2">
+        {isEditing && !passwordFromSetting && (
           <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
             <AlertDialogTrigger asChild>
               <Button
