@@ -439,6 +439,9 @@ function parsePermissions(raw: unknown): Permission[] | undefined {
   }))
 }
 
+// The paths uploadAvatar answers with: /data/avatars/<milliseconds>-<uuid><extension>.
+const AVATAR_PATH = /^\/data\/avatars\/[A-Za-z0-9-]+\.[a-z]+$/
+
 /** A password every account must have: 4 to 128 characters (Tofu: never empty). */
 function checkedPassword(password: unknown): string {
   if (typeof password !== 'string' || password.length === 0) {
@@ -457,6 +460,7 @@ export async function createUser(formData: FormData): Promise<PublicUser> {
 
   // Validate username against schema
   usernameSchema.parse(username);
+  if (avatarPath && !AVATAR_PATH.test(avatarPath)) throw new Error('Invalid avatar');
 
   const hashedPassword = saltAndHashPassword(password);
 
@@ -492,7 +496,7 @@ export async function updateUser(userId: string, updates: Partial<Omit<User, 'id
   const allowed: Partial<User> = {}
   if (updates?.username !== undefined) allowed.username = usernameSchema.parse(updates.username)
   if (updates?.avatarPath !== undefined) {
-    if (updates.avatarPath && !/^\/data\/avatars\/[A-Za-z0-9._-]+$/.test(updates.avatarPath)) {
+    if (updates.avatarPath && !AVATAR_PATH.test(updates.avatarPath)) {
       throw new Error('Invalid avatar')
     }
     allowed.avatarPath = updates.avatarPath || undefined

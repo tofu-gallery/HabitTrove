@@ -43,7 +43,10 @@ async function makeSchema(): Promise<void> {
     `SELECT to_regclass('public.${DOCUMENTS}') IS NOT NULL
         AND to_regclass('public.${AVATARS}') IS NOT NULL AS ready`,
   )
-  if (found.rows[0]?.ready) return
+  if (found.rows[0]?.ready) {
+    console.log('[tofu] schema: found the tables')
+    return
+  }
 
   const client = await pool.connect()
   const started = Date.now()
@@ -51,11 +54,14 @@ async function makeSchema(): Promise<void> {
     await client.query('BEGIN')
     await client.query('SELECT pg_advisory_xact_lock($1)', [SCHEMA_LOCK_KEY])
     const waited = Date.now() - started
-    const again = await client.query<{ ready: boolean }>(
-      `SELECT to_regclass('public.${DOCUMENTS}') IS NOT NULL
-          AND to_regclass('public.${AVATARS}') IS NOT NULL AS ready`,
+    // Read pg_class with this statement's own snapshot: to_regclass answers from a
+    // cache that can still say "missing" for a table another start made meanwhile.
+    const again = await client.query<{ tables: string }>(
+      `SELECT count(*) AS tables FROM pg_catalog.pg_class c
+       JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+       WHERE n.nspname = 'public' AND c.relname IN ('${DOCUMENTS}', '${AVATARS}')`,
     )
-    if (again.rows[0]?.ready) {
+    if (Number(again.rows[0]?.tables) === 2) {
       await client.query('COMMIT')
       console.log(`[tofu] schema: already made by another start (waited ${waited} ms for the lock)`)
       return
