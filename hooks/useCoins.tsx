@@ -1,3 +1,5 @@
+// Modified by Tofu on 2026-10-28: a note is saved with updateTransactionNote
+// instead of sending the whole ledger (see TOFU.md).
 import { useAtom } from 'jotai';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
@@ -14,7 +16,7 @@ import {
   usersAtom,
   currentUserAtom,
 } from '@/lib/atoms'
-import { addCoins, removeCoins, saveCoinsData } from '@/app/actions/data'
+import { addCoins, removeCoins, updateTransactionNote } from '@/app/actions/data'
 import { CoinsData, User } from '@/lib/types'
 import { toast } from '@/hooks/use-toast'
 import { MAX_COIN_LIMIT } from '@/lib/constants'
@@ -186,21 +188,8 @@ export function useCoins(options?: { selectedUser?: string }) {
       return null
     }
 
-    const updatedTransaction = {
-      ...transaction,
-      note: note.trim() || undefined
-    }
-
-    const updatedTransactions = coins.transactions.map(t =>
-      t.id === transactionId ? updatedTransaction : t
-    )
-
-    const newData: CoinsData = {
-      ...coins,
-      transactions: updatedTransactions
-    }
-
-    await saveCoinsData(newData)
+    // Tofu: the server changes this one note (updateTransactionNote) instead of taking a whole ledger.
+    const newData: CoinsData = await updateTransactionNote(transactionId, note)
     setCoins(newData)
     return newData
   }

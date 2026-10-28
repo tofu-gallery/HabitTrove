@@ -283,7 +283,7 @@
     "toastUserDeletedDescription": "Пользователь {username} успешно удален",
     "toastDeleteUserFailed": "Не удалось удалить пользователя: {error}",
     "errorTitle": "Ошибка",
-    "errorFileSizeLimit": "Размер файла должен быть менее 5 МБ",
+    "errorFileSizeLimit": "Размер файла должен быть менее 3 МБ",
     "toastAvatarUploadedTitle": "Аватар загружен",
     "toastAvatarUploadedDescription": "Аватар успешно загружен",
     "errorFailedAvatarUpload": "Не удалось загрузить аватар",
@@ -445,5 +445,11 @@
     "clearButton": "Очистить",
     "saveDrawingButton": "Сохранить рисунок",
     "cancelButton": "Отмена"
+  },
+  "Tofu": {
+    "ownerPasswordMissing": "У учётной записи администратора этой копии ещё нет пароля. Владелец сохраняет его как HABITTROVE_ADMIN_PASSWORD (скрытое значение) в разделе Keys & settings приложения в Tofu и затем снова развёртывает приложение. До этого никто не может войти.",
+    "ownerPasswordNote": "Эта учётная запись входит с паролем HABITTROVE_ADMIN_PASSWORD, сохранённым в Tofu. Чтобы сменить пароль, измените это значение там и снова разверните приложение.",
+    "passwordRequired": "Каждой учётной записи нужен пароль.",
+    "sourceCode": "Исходный код"
   }
 }

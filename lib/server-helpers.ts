@@ -1,18 +1,14 @@
+// Modified by Tofu on 2026-10-28: accounts are read from PostgreSQL (lib/store.ts)
+// instead of data/auth.json, and an account without a password no longer signs
+// in with an empty one (see TOFU.md).
 import { auth } from '@/auth'
 import 'server-only'
-import { User, UserData, UserId, getDefaultUsersData } from './types'
-import { randomBytes, scryptSync } from 'crypto'
-import fs from 'fs/promises'
-import path from 'path'
+import { User, UserData, UserId } from './types'
+import { randomBytes, scryptSync, timingSafeEqual } from 'crypto'
+import { readDocument } from './store'
 
 async function loadUsersDataFromStore(): Promise<UserData> {
-  try {
-    const filePath = path.join(process.cwd(), 'data', 'auth.json')
-    const data = await fs.readFile(filePath, 'utf8')
-    return JSON.parse(data) as UserData
-  } catch {
-    return getDefaultUsersData()
-  }
+  return readDocument<UserData>('auth')
 }
 
 export async function getCurrentUserId(): Promise<UserId | undefined> {
@@ -37,15 +33,16 @@ export function saltAndHashPassword(password: string, salt?: string): string {
 }
 
 export function verifyPassword(password?: string, storedHash?: string): boolean {
-  // if both password and storedHash is undefined, return true
-  if (!password && !storedHash) return true
-  // else if either password or storedHash is undefined, return false
+  // Tofu: without a stored hash there is nothing to match, so no password signs in.
   if (!password || !storedHash) return false
 
   // Split the stored hash into its salt and hash components
   const [salt, hash] = storedHash.split(':')
+  if (!salt || !hash) return false
   // Hash the input password with the same salt
   const newHash = saltAndHashPassword(password, salt).split(':')[1]
   // Compare the new hash with the stored hash
-  return newHash === hash
+  const a = Buffer.from(newHash, 'hex')
+  const b = Buffer.from(hash, 'hex')
+  return a.length === b.length && timingSafeEqual(a, b)
 }

@@ -1,7 +1,11 @@
+// Modified by Tofu on 2026-10-28: the data lives in PostgreSQL, so DATABASE_URL
+// is required, and AUTH_SECRET is derived from it when it is unset (see TOFU.md).
 import { z } from "zod"
+import { authSecret } from "./tofu-database"
 
 const zodEnv = z.object({
-  AUTH_SECRET: z.string(),
+  DATABASE_URL: z.string().min(1),
+  AUTH_SECRET: z.string().min(1),
   DEMO: z.string().optional(),
 })
 
@@ -13,6 +17,10 @@ declare global {
 }
 
 export function init() {
+  if (!process.env.AUTH_SECRET?.trim()) {
+    const derived = authSecret()
+    if (derived) process.env.AUTH_SECRET = derived
+  }
   try {
     zodEnv.parse(process.env)
   } catch (err) {

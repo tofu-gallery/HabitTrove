@@ -1,3 +1,6 @@
+// Modified by Tofu on 2026-10-28: no automatic backup setting, the sign-in
+// screen learns which account signs in with HABITTROVE_ADMIN_PASSWORD, and the
+// server settings carry the copy's source address (see TOFU.md).
 import { RRule } from "rrule"
 import { uuid } from "./utils"
 import { DateTime } from "luxon"
@@ -38,6 +41,7 @@ export type User = SafeUser & {
 
 export type PublicUser = Omit<User, 'password'> & {
   hasPassword: boolean
+  passwordFromSetting?: boolean // Tofu: signs in with the HABITTROVE_ADMIN_PASSWORD the owner saved
 }
 
 export type Habit = {
@@ -149,15 +153,20 @@ export const getDefaultSettings = (): Settings => ({
   system: {
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     weekStartDay: 1, // Monday
-    autoBackupEnabled: true, // Add this line (default to true)
     language: 'en', // Default language
   },
   profile: {}
 });
 
+// Tofu: where this copy's source code is when SOURCE_URL is not set.
+export const DEFAULT_SOURCE_URL = 'https://github.com/tofu-gallery/HabitTrove'
+
 export const getDefaultServerSettings = (): ServerSettings => ({
-  isDemo: false
+  isDemo: false,
+  adminPasswordMissing: false,
+  sourceUrl: DEFAULT_SOURCE_URL,
 })
+
 
 // Map of data types to their default values
 export const DATA_DEFAULTS = {
@@ -181,7 +190,6 @@ export type WeekDay = 0 | 1 | 2 | 3 | 4 | 5 | 6; // 0 = Sunday, 6 = Saturday
 export interface SystemSettings {
   timezone: string;
   weekStartDay: WeekDay;
-  autoBackupEnabled: boolean; // Add this line
   language: string; // Add this line for language preference
 }
 
@@ -214,6 +222,8 @@ export interface JotaiHydrateInitialValues {
 
 export interface ServerSettings {
   isDemo: boolean
+  adminPasswordMissing: boolean // Tofu: HABITTROVE_ADMIN_PASSWORD is not saved yet
+  sourceUrl: string // Tofu: this copy's source code (AGPL-3.0 section 13)
 }
 
 export type ParsedResultType = DateTime<true> | RRule | string | null // null if invalid

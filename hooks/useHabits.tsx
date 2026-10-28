@@ -1,3 +1,5 @@
+// Modified by Tofu on 2026-10-28: each save also sends the list it started
+// from, so the server applies only this change (see TOFU.md).
 import { useAtom, atom } from 'jotai'
 import { useTranslations } from 'next-intl'
 import { habitsAtom, coinsAtom, settingsAtom, usersAtom, habitFreqMapAtom, currentUserAtom } from '@/lib/atoms'
@@ -95,7 +97,7 @@ export function useHabits() {
       h.id === habit.id ? updatedHabit : h
     )
 
-    await saveHabitsData({ habits: updatedHabits })
+    await saveHabitsData({ habits: updatedHabits }, habitsData)
 
     // Check if we've now reached the target
     const isTargetReached = completionsToday + 1 === target
@@ -158,7 +160,7 @@ export function useHabits() {
         h.id === habit.id ? updatedHabit : h
       )
 
-      await saveHabitsData({ habits: updatedHabits })
+      await saveHabitsData({ habits: updatedHabits }, habitsData)
       setHabitsData({ habits: updatedHabits })
 
       // If we were at the target, remove the coins
@@ -213,7 +215,7 @@ export function useHabits() {
       ? habitsData.habits.map(h => h.id === habit.id ? newHabit : h)
       : [...habitsData.habits, newHabit]
 
-    await saveHabitsData({ habits: updatedHabits })
+    await saveHabitsData({ habits: updatedHabits }, habitsData)
     setHabitsData({ habits: updatedHabits })
     return updatedHabits
   }
@@ -221,7 +223,7 @@ export function useHabits() {
   const deleteHabit = async (id: string) => {
     if (!handlePermissionCheck(currentUser, 'habit', 'write', tCommon)) return
     const updatedHabits = habitsData.habits.filter(h => h.id !== id)
-    await saveHabitsData({ habits: updatedHabits })
+    await saveHabitsData({ habits: updatedHabits }, habitsData)
     setHabitsData({ habits: updatedHabits })
     return updatedHabits
   }
@@ -264,7 +266,7 @@ export function useHabits() {
       h.id === habit.id ? updatedHabit : h
     )
 
-    await saveHabitsData({ habits: updatedHabits })
+    await saveHabitsData({ habits: updatedHabits }, habitsData)
     setHabitsData({ habits: updatedHabits })
 
     // Check if we've now reached the target
@@ -301,7 +303,7 @@ export function useHabits() {
     const updatedHabits = habitsData.habits.map(h =>
       h.id === id ? { ...h, archived: true } : h
     )
-    await saveHabitsData({ habits: updatedHabits })
+    await saveHabitsData({ habits: updatedHabits }, habitsData)
     setHabitsData({ habits: updatedHabits })
   }
 
@@ -310,7 +312,7 @@ export function useHabits() {
     const updatedHabits = habitsData.habits.map(h =>
       h.id === id ? { ...h, archived: false } : h
     )
-    await saveHabitsData({ habits: updatedHabits })
+    await saveHabitsData({ habits: updatedHabits }, habitsData)
     setHabitsData({ habits: updatedHabits })
   }
 

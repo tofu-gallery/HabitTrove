@@ -285,7 +285,7 @@
     "actionCreate": "create",
     "errorFailedUserAction": "Failed to {action} user",
     "errorTitle": "Error",
-    "errorFileSizeLimit": "File size must be less than 5MB",
+    "errorFileSizeLimit": "File size must be less than 3MB",
     "toastAvatarUploadedTitle": "Avatar uploaded",
     "toastAvatarUploadedDescription": "Successfully uploaded avatar",
     "errorFailedAvatarUpload": "Failed to upload avatar",
@@ -445,5 +445,11 @@
   "Warning": {
     "areYouSure": "Are you sure?",
     "cancel": "Cancel"
+  },
+  "Tofu": {
+    "ownerPasswordMissing": "This copy's administrator account has no password yet. Its owner saves one as HABITTROVE_ADMIN_PASSWORD (a hidden value) in the app's Keys & settings on Tofu, then deploys again. Until then nobody can sign in.",
+    "ownerPasswordNote": "This account signs in with the HABITTROVE_ADMIN_PASSWORD saved on Tofu. To change its password, change that value there and deploy again.",
+    "passwordRequired": "Every account needs a password.",
+    "sourceCode": "Source code"
   }
 }

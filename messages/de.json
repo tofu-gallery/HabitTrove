@@ -283,7 +283,7 @@
     "toastUserDeletedDescription": "Benutzer {username} wurde erfolgreich gelöscht",
     "toastDeleteUserFailed": "Fehler beim Löschen des Benutzers: {error}",
     "errorTitle": "Fehler",
-    "errorFileSizeLimit": "Die Dateigröße muss kleiner als 5MB sein",
+    "errorFileSizeLimit": "Die Dateigröße muss kleiner als 3MB sein",
     "toastAvatarUploadedTitle": "Avatar hochgeladen",
     "toastAvatarUploadedDescription": "Avatar erfolgreich hochgeladen",
     "errorFailedAvatarUpload": "Fehler beim Hochladen des Avatars",
@@ -445,5 +445,11 @@
     "clearButton": "Löschen",
     "saveDrawingButton": "Zeichnung speichern",
     "cancelButton": "Abbrechen"
+  },
+  "Tofu": {
+    "ownerPasswordMissing": "Das Administratorkonto dieser Kopie hat noch kein Passwort. Wem die Kopie gehört, speichert eines als HABITTROVE_ADMIN_PASSWORD (ein verborgener Wert) unter Keys & settings der App bei Tofu und stellt die App dann erneut bereit. Bis dahin kann sich niemand anmelden.",
+    "ownerPasswordNote": "Dieses Konto meldet sich mit dem bei Tofu gespeicherten HABITTROVE_ADMIN_PASSWORD an. Um sein Passwort zu ändern, ändere diesen Wert dort und stelle die App erneut bereit.",
+    "passwordRequired": "Jedes Konto braucht ein Passwort.",
+    "sourceCode": "Quellcode"
   }
 }

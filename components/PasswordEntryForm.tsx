@@ -1,3 +1,6 @@
+// Modified by Tofu on 2026-10-28: the account a new copy starts with says what
+// its owner must do while HABITTROVE_ADMIN_PASSWORD is not saved, and every
+// account signs in with a password (see TOFU.md).
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -24,7 +27,11 @@ export default function PasswordEntryForm({
   error 
 }: PasswordEntryFormProps) {
   const t = useTranslations('PasswordEntryForm');
+  const tTofu = useTranslations('Tofu');
   const hasPassword = user.hasPassword ?? false;
+  // Tofu: an account with no password cannot sign in; for the administrator account
+  // a new copy starts with, that means HABITTROVE_ADMIN_PASSWORD is not saved yet.
+  const waitsForOwner = !hasPassword && !!(user as SafeUser & { passwordFromSetting?: boolean }).passwordFromSetting;
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,6 +72,12 @@ export default function PasswordEntryForm({
         </div>
       </div>
 
+      {waitsForOwner && (
+        <p role="status" data-tofu="owner-password-missing" className="text-sm rounded-md border border-amber-300 bg-amber-50 p-3 text-amber-900 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-100">
+          {tTofu('ownerPasswordMissing')}
+        </p>
+      )}
+
       {hasPassword && <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="password">{t('passwordLabel')}</Label>
@@ -86,7 +99,7 @@ export default function PasswordEntryForm({
         <Button type="button" variant="outline" onClick={onCancel}>
           {t('cancelButton')}
         </Button>
-        <Button type="submit" disabled={hasPassword && !password}>
+        <Button type="submit" disabled={!hasPassword || !password}>
           {t('loginButton')}
         </Button>
       </div>

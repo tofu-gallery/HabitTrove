@@ -283,7 +283,7 @@
     "toastUserDeletedDescription": "ユーザー {username} は正常に削除されました",
     "toastDeleteUserFailed": "ユーザーの削除に失敗しました: {error}",
     "errorTitle": "エラー",
-    "errorFileSizeLimit": "ファイルサイズは5MB以下である必要があります",
+    "errorFileSizeLimit": "ファイルサイズは3MB以下である必要があります",
     "toastAvatarUploadedTitle": "アバターをアップロードしました",
     "toastAvatarUploadedDescription": "アバターのアップロードに成功しました",
     "errorFailedAvatarUpload": "アバターのアップロードに失敗しました",
@@ -445,5 +445,11 @@
     "clearButton": "クリア",
     "saveDrawingButton": "描画を保存",
     "cancelButton": "キャンセル"
+  },
+  "Tofu": {
+    "ownerPasswordMissing": "このコピーの管理者アカウントにはまだパスワードがありません。所有者が Tofu のこのアプリの Keys & settings で HABITTROVE_ADMIN_PASSWORD（非表示の値）として保存し、もう一度デプロイします。それまでは誰もサインインできません。",
+    "ownerPasswordNote": "このアカウントは Tofu に保存された HABITTROVE_ADMIN_PASSWORD でサインインします。パスワードを変えるには、そこでその値を変更してもう一度デプロイしてください。",
+    "passwordRequired": "すべてのアカウントにパスワードが必要です。",
+    "sourceCode": "ソースコード"
   }
 }

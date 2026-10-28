@@ -1,3 +1,7 @@
+// Modified by Tofu on 2026-10-28: every account has a password (no "Disable
+// password" switch), the account that signs in with HABITTROVE_ADMIN_PASSWORD
+// says so instead of offering a new password, and avatars are at most 3 MB
+// (see TOFU.md).
 'use client';
 
 import { useState } from 'react';
@@ -17,7 +21,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Label } from './ui/label';
-import { Switch } from './ui/switch';
 import { Permission } from '@/lib/types';
 import { toast } from '@/hooks/use-toast';
 import { useAtom, useAtomValue } from 'jotai';
@@ -37,6 +40,7 @@ interface UserFormProps {
 
 export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps) {
   const t = useTranslations('UserForm');
+  const tTofu = useTranslations('Tofu');
   const [users, setUsersData] = useAtom(usersAtom);
   const serverSettings = useAtomValue(serverSettingsAtom)
   const user = userId ? users.users.find(u => u.id === userId) : undefined;
@@ -59,7 +63,9 @@ export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps)
   const [avatarPath, setAvatarPath] = useState(user?.avatarPath)
   const [username, setUsername] = useState(user?.username || '');
   const [password, setPassword] = useState<string | undefined>('');
-  const [disablePassword, setDisablePassword] = useState(user ? !user.hasPassword : serverSettings.isDemo);
+  // Tofu: never true; kept so the rest of the form reads as upstream wrote it.
+  const disablePassword = false;
+  const passwordFromSetting = !!user?.passwordFromSetting;
   const [error, setError] = useState('');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [isAdmin, setIsAdmin] = useState(user?.isAdmin || false);
@@ -142,6 +148,12 @@ export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps)
         return;
       }
 
+      // Tofu: a new account needs a password.
+      if (!isEditing && !password) {
+        setError(tTofu('passwordRequired'));
+        return;
+      }
+
       // Validate password unless disabled
       if (!disablePassword && password) {
         const passwordResult = passwordSchema.safeParse(password);
@@ -158,9 +170,7 @@ export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps)
         }
 
         // Handle password update
-        if (disablePassword) {
-          await updateUserPassword(user.id, undefined);
-        } else if (password) {
+        if (password && !passwordFromSetting) {
           await updateUserPassword(user.id, password);
         }
 
@@ -173,7 +183,7 @@ export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps)
               avatarPath,
               permissions,
               isAdmin,
-              hasPassword: disablePassword ? false : (password ? true : !!u.hasPassword)
+              hasPassword: password && !passwordFromSetting ? true : !!u.hasPassword
             } : u
           ),
         }));
@@ -187,11 +197,7 @@ export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps)
         // Create new user
         const formData = new FormData();
         formData.append('username', username);
-        if (disablePassword) {
-          formData.append('password', '');
-        } else if (password) {
-          formData.append('password', password);
-        }
+        formData.append('password', password || '');
         formData.append('permissions', JSON.stringify(isAdmin ? undefined : permissions));
         formData.append('isAdmin', JSON.stringify(isAdmin));
         formData.append('avatarPath', avatarPath || '');
@@ -219,7 +225,7 @@ export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps)
   };
 
   const handleAvatarChange = async (file: File) => {
-    if (file.size > 5 * 1024 * 1024) { // 5MB
+    if (file.size > 3 * 1024 * 1024) { // 3MB (Tofu: lib/avatar.ts MAX_AVATAR_BYTES)
       toast({
         title: t('errorTitle'),
         description: t('errorFileSizeLimit'),
@@ -303,6 +309,9 @@ export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps)
           />
         </div>
 
+        {passwordFromSetting ? (
+          <p data-tofu="owner-password-note" className="text-sm text-muted-foreground">{tTofu('ownerPasswordNote')}</p>
+        ) : (
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="password">
@@ -322,16 +331,8 @@ export default function UserForm({ userId, onCancel, onSuccess }: UserFormProps)
             )}
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="disable-password"
-              checked={disablePassword}
-              onCheckedChange={setDisablePassword}
-              disabled={serverSettings.isDemo}
-            />
-            <Label htmlFor="disable-password">{t('disablePasswordLabel')}</Label>
-          </div>
         </div>
+        )}
 
         {error && (
           <p className="text-sm text-red-500 bg-red-50 dark:bg-red-950/50 p-2 rounded">{error}</p>

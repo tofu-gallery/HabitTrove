@@ -1,21 +1,16 @@
+// Modified by Tofu on 2026-10-28: no automatic backup setting; Tofu runs
+// nothing between requests, and the database keeps its own backups (see TOFU.md).
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { DynamicTimeNoSSR } from '@/components/DynamicTimeNoSSR';
 import { useAtom } from 'jotai';
 import { useTranslations } from 'next-intl';
 import { settingsAtom, serverSettingsAtom } from '@/lib/atoms';
 import { Settings, WeekDay } from '@/lib/types'
 import { saveSettings } from '../actions/data'
-import { Info } from 'lucide-react'; // Import Info icon
 import { toast } from '@/hooks/use-toast'
 import { useSession } from 'next-auth/react'; // signOut removed
 import { useRouter } from 'next/navigation';
@@ -158,40 +153,6 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            {/* Add this section for Auto Backup */}
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-1.5">
-                  <Label htmlFor="auto-backup">{t('autoBackupLabel')}</Label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent side="top" align="start">
-                        <p className="max-w-xs text-sm">
-                          {t('autoBackupTooltip')}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {t('autoBackupDescription')}
-                </div>
-              </div>
-              <Switch
-                id="auto-backup"
-                checked={settings.system.autoBackupEnabled}
-                onCheckedChange={(checked) =>
-                  updateSettings({
-                    ...settings,
-                    system: { ...settings.system, autoBackupEnabled: checked }
-                  })
-                }
-              />
-            </div>
-            {/* End of Auto Backup section */}
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">

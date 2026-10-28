@@ -283,7 +283,7 @@
     "toastUserDeletedDescription": "用户 {username} 已成功删除",
     "toastDeleteUserFailed": "删除用户失败: {error}",
     "errorTitle": "错误",
-    "errorFileSizeLimit": "文件大小必须小于 5MB",
+    "errorFileSizeLimit": "文件大小必须小于 3MB",
     "toastAvatarUploadedTitle": "头像已上传",
     "toastAvatarUploadedDescription": "成功上传头像",
     "errorFailedAvatarUpload": "头像上传失败",
@@ -445,5 +445,11 @@
     "clearButton": "清除",
     "saveDrawingButton": "保存绘图",
     "cancelButton": "取消"
+  },
+  "Tofu": {
+    "ownerPasswordMissing": "这个副本的管理员账号还没有密码。所有者需要在 Tofu 上这个 app 的 Keys & settings 里把密码存为 HABITTROVE_ADMIN_PASSWORD（隐藏值），然后重新部署。在那之前，谁都无法登录。",
+    "ownerPasswordNote": "这个账号用 Tofu 上保存的 HABITTROVE_ADMIN_PASSWORD 登录。要改密码，请在那里修改这个值并重新部署。",
+    "passwordRequired": "每个账号都需要密码。",
+    "sourceCode": "源代码"
   }
 }

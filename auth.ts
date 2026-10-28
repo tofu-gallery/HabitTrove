@@ -1,11 +1,16 @@
+// Modified by Tofu on 2026-10-28: accounts are checked by lib/accounts.ts, and
+// the session secret is AUTH_SECRET or one derived from DATABASE_URL (see TOFU.md).
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { getUser } from "./app/actions/data"
+import { authenticate } from "./lib/accounts"
+import { authSecret } from "./lib/tofu-database"
 import { signInSchema } from "./lib/zod"
-import { SafeUser, SessionUser } from "./lib/types"
- 
+import { SessionUser } from "./lib/types"
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
+  // Tofu: read here, as the module loads, because Auth.js reads AUTH_SECRET at that moment too.
+  secret: authSecret(),
   providers: [
     Credentials({
       credentials: {
@@ -13,15 +18,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
-        const { username, password } = await signInSchema.parseAsync(credentials)
-        
-        // Pass the plaintext password to getUser for verification
-        const user = await getUser(username, password)
- 
-        if (!user) {
-          throw new Error("Invalid credentials.")
-        }
- 
+        const parsed = signInSchema.safeParse(credentials)
+        if (!parsed.success) return null
+        const { username, password } = parsed.data
+
+        // Pass the plaintext password to authenticate for verification
+        const user = await authenticate(username, password)
+
+        // Tofu: null is Auth.js's own "wrong username or password" (CredentialsSignin).
+        if (!user) return null
+
         const safeUser: SessionUser = { id: user.id }
         return safeUser
       },

@@ -1,3 +1,6 @@
+// Modified by Tofu on 2026-10-28: the sign-in screen says plainly when the
+// owner has not saved HABITTROVE_ADMIN_PASSWORD yet, and links this copy's
+// source code (AGPL-3.0 section 13) (see TOFU.md).
 'use client';
 
 import { useState } from 'react';
@@ -8,8 +11,8 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Crown, Plus, User as UserIcon, UserRoundPen } from 'lucide-react';
 
 
-import { useAtom } from 'jotai';
-import { usersAtom, currentUserAtom } from '@/lib/atoms';
+import { useAtom, useAtomValue } from 'jotai';
+import { usersAtom, currentUserAtom, serverSettingsAtom } from '@/lib/atoms';
 import { signIn } from '@/app/actions/user';
 import { useTranslations } from 'next-intl';
 import { toast } from '@/hooks/use-toast';
@@ -134,6 +137,8 @@ export default function UserSelectModal({ onClose }: { onClose: () => void }) {
   const [usersData, setUsersData] = useAtom(usersAtom);
   const users = usersData.users;
   const [currentUser] = useAtom(currentUserAtom);
+  const serverSettings = useAtomValue(serverSettingsAtom);
+  const tTofu = useTranslations('Tofu');
 
 
   const handleUserSelect = (userId: string) => {
@@ -173,6 +178,11 @@ export default function UserSelectModal({ onClose }: { onClose: () => void }) {
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
+          {serverSettings.adminPasswordMissing && !currentUser && (
+            <p role="status" data-tofu="owner-password-missing" className="text-sm rounded-md border border-amber-300 bg-amber-50 p-3 text-amber-900 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-100">
+              {tTofu('ownerPasswordMissing')}
+            </p>
+          )}
           {!selectedUser && !isCreating && !isEditing ? (
             <UserSelectionView
               users={users}
@@ -216,6 +226,15 @@ export default function UserSelectModal({ onClose }: { onClose: () => void }) {
               error={error}
             />
           )}
+          <a
+            href={serverSettings.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-tofu="source-code"
+            className="self-center text-xs text-muted-foreground underline hover:text-foreground"
+          >
+            {tTofu('sourceCode')}
+          </a>
         </div>
       </DialogContent>
     </Dialog>

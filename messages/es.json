@@ -283,7 +283,7 @@
     "toastUserDeletedDescription": "El usuario {username} ha sido eliminado correctamente",
     "toastDeleteUserFailed": "Error al eliminar el usuario: {error}",
     "errorTitle": "Error",
-    "errorFileSizeLimit": "El tamaño del archivo debe ser menor a 5MB",
+    "errorFileSizeLimit": "El tamaño del archivo debe ser menor a 3MB",
     "toastAvatarUploadedTitle": "Avatar subido",
     "toastAvatarUploadedDescription": "Avatar subido con éxito",
     "errorFailedAvatarUpload": "Error al subir avatar",
@@ -445,5 +445,11 @@
     "maxAmountExceededDescription": "La cantidad no puede exceder {max}.",
     "transactionNotFoundDescription": "Transacción no encontrada",
     "maxAmountExceededDescription": "La cantidad no puede exceder {max}."
+  },
+  "Tofu": {
+    "ownerPasswordMissing": "La cuenta de administrador de esta copia aún no tiene contraseña. Quien la posee guarda una como HABITTROVE_ADMIN_PASSWORD (un valor oculto) en Keys & settings de la app en Tofu y vuelve a desplegarla. Hasta entonces nadie puede iniciar sesión.",
+    "ownerPasswordNote": "Esta cuenta inicia sesión con el HABITTROVE_ADMIN_PASSWORD guardado en Tofu. Para cambiar su contraseña, cambia ese valor allí y vuelve a desplegar la app.",
+    "passwordRequired": "Cada cuenta necesita una contraseña.",
+    "sourceCode": "Código fuente"
   }
 }

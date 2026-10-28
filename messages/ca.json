@@ -283,7 +283,7 @@
     "toastUserDeletedDescription": "L'usuari {username} s'ha eliminat correctament",
     "toastDeleteUserFailed": "Error en eliminar l'usuari: {error}",
     "errorTitle": "Error",
-    "errorFileSizeLimit": "La mida de l'arxiu ha de ser inferior a 5MB",
+    "errorFileSizeLimit": "La mida de l'arxiu ha de ser inferior a 3MB",
     "toastAvatarUploadedTitle": "Avatar pujat",
     "toastAvatarUploadedDescription": "Avatar pujat amb èxit",
     "errorFailedAvatarUpload": "Error en pujar l'avatar",
@@ -443,5 +443,11 @@
     "clearButton": "Neteja",
     "saveDrawingButton": "Desa el dibuix",
     "cancelButton": "Cancel·la"
+  },
+  "Tofu": {
+    "ownerPasswordMissing": "El compte d'administrador d'aquesta còpia encara no té contrasenya. Qui la té en desa una com a HABITTROVE_ADMIN_PASSWORD (un valor ocult) a Keys & settings de l'app a Tofu i la torna a desplegar. Fins aleshores ningú no pot iniciar sessió.",
+    "ownerPasswordNote": "Aquest compte inicia sessió amb el HABITTROVE_ADMIN_PASSWORD desat a Tofu. Per canviar-ne la contrasenya, canvia aquest valor allà i torna a desplegar l'app.",
+    "passwordRequired": "Cada compte necessita una contrasenya.",
+    "sourceCode": "Codi font"
   }
 }

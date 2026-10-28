@@ -1,3 +1,5 @@
+// Modified by Tofu on 2026-10-28: each save also sends the list it started
+// from, so the server applies only this change (see TOFU.md).
 import { useAtom } from 'jotai'
 import { useTranslations } from 'next-intl'
 import { wishlistAtom, coinsAtom, currentUserAtom } from '@/lib/atoms'
@@ -49,7 +51,7 @@ export function useWishlist() {
     const newItems = [...wishlist.items, newItem]
     const newWishListData = { items: newItems }
     setWishlist(newWishListData)
-    await saveWishlistItems(newWishListData)
+    await saveWishlistItems(newWishListData, wishlist)
   }
 
   const editWishlistItem = async (updatedItem: WishlistItemType) => {
@@ -59,7 +61,7 @@ export function useWishlist() {
     )
     const newWishListData = { items: newItems }
     setWishlist(newWishListData)
-    await saveWishlistItems(newWishListData)
+    await saveWishlistItems(newWishListData, wishlist)
   }
 
   const deleteWishlistItem = async (id: string) => {
@@ -67,7 +69,7 @@ export function useWishlist() {
     const newItems = wishlist.items.filter(item => item.id !== id)
     const newWishListData = { items: newItems }
     setWishlist(newWishListData)
-    await saveWishlistItems(newWishListData)
+    await saveWishlistItems(newWishListData, wishlist)
   }
 
   const redeemWishlistItem = async (item: WishlistItemType) => {
@@ -113,7 +115,7 @@ export function useWishlist() {
         })
         const newWishListData = { items: newItems }
         setWishlist(newWishListData)
-        await saveWishlistItems(newWishListData)
+        await saveWishlistItems(newWishListData, wishlist)
       }
 
       // Randomly choose a celebration effect
@@ -148,7 +150,7 @@ export function useWishlist() {
     )
     const newWishListData = { items: newItems }
     setWishlist(newWishListData)
-    await saveWishlistItems(newWishListData)
+    await saveWishlistItems(newWishListData, wishlist)
   }
 
   const unarchiveWishlistItem = async (id: string) => {
@@ -158,7 +160,7 @@ export function useWishlist() {
     )
     const newWishListData = { items: newItems }
     setWishlist(newWishListData)
-    await saveWishlistItems(newWishListData)
+    await saveWishlistItems(newWishListData, wishlist)
   }
 
   return {

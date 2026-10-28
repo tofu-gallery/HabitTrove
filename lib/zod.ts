@@ -1,3 +1,5 @@
+// Modified by Tofu on 2026-10-28: a password may be up to 128 characters, so a
+// long HABITTROVE_ADMIN_PASSWORD signs in (see TOFU.md).
 import { literal, object, string } from "zod"
 
 export const usernameSchema = string()
@@ -7,7 +9,7 @@ export const usernameSchema = string()
 
 export const passwordSchema = string()
   .min(4, "Password must be more than 4 characters")
-  .max(32, "Password must be less than 32 characters")
+  .max(128, "Password must be at most 128 characters")
   .optional()
   .or(literal(''))
 

@@ -1,3 +1,5 @@
+// Modified by Tofu on 2026-10-28: avatars are kept in the database and are at
+// most 3 MB, under the size a request to the app may carry (see TOFU.md).
 export const ALLOWED_AVATAR_EXTENSIONS = new Set([
   '.png',
   '.jpg',
@@ -23,3 +25,5 @@ export const AVATAR_CONTENT_TYPE: Record<string, string> = {
   '.webp': 'image/webp',
   '.avif': 'image/avif',
 }
+
+export const MAX_AVATAR_BYTES = 3 * 1024 * 1024

@@ -277,7 +277,7 @@
     "actionCreate": "생성",
     "errorFailedUserAction": "사용자 {action} 실패",
     "errorTitle": "오류",
-    "errorFileSizeLimit": "파일 크기는 5MB 미만이어야 합니다",
+    "errorFileSizeLimit": "파일 크기는 3MB 미만이어야 합니다",
     "toastAvatarUploadedTitle": "아바타 업로드됨",
     "toastAvatarUploadedDescription": "아바타가 성공적으로 업로드되었습니다",
     "errorFailedAvatarUpload": "아바타 업로드 실패",
@@ -445,5 +445,11 @@
     "clearButton": "지우기",
     "saveDrawingButton": "그림 저장",
     "cancelButton": "취소"
+  },
+  "Tofu": {
+    "ownerPasswordMissing": "이 사본의 관리자 계정에는 아직 비밀번호가 없습니다. 소유자가 Tofu에서 이 앱의 Keys & settings에 HABITTROVE_ADMIN_PASSWORD(숨긴 값)로 저장한 뒤 다시 배포해야 합니다. 그 전에는 아무도 로그인할 수 없습니다.",
+    "ownerPasswordNote": "이 계정은 Tofu에 저장된 HABITTROVE_ADMIN_PASSWORD로 로그인합니다. 비밀번호를 바꾸려면 그곳에서 값을 바꾸고 다시 배포하세요.",
+    "passwordRequired": "모든 계정에는 비밀번호가 필요합니다.",
+    "sourceCode": "소스 코드"
   }
 }

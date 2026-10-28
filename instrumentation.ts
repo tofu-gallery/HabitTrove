@@ -1,26 +1,22 @@
-import { init } from '@/lib/env.server'; // startup env var check
+// Modified by Tofu on 2026-10-28: no backup scheduler (Tofu runs no process
+// between requests), and the start makes the database tables (see TOFU.md).
 
 // Ensure this function is exported
 export async function register() {
   // We only want to run this code on the server side
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    console.log('Node.js runtime detected, running server-side instrumentation...');
+    const { init } = await import('@/lib/env.server') // startup env var check
     // Initialize environment variables first
-    console.log('Initializing environment variables...');
     init();
     console.log('Environment variables initialized.');
 
-    // Dynamically import the scheduler initializer
-    // Use await import() for ESM compatibility
+    // Tofu: make the tables now, under one lock shared by every start (lib/store.ts).
+    // A failure is logged, not fatal: the first request tries again.
     try {
-      console.log('Attempting to import scheduler...');
-      // Ensure the path is correct relative to the project root
-      const { initializeScheduler } = await import('./lib/scheduler');
-      console.log('Scheduler imported successfully. Initializing...');
-      initializeScheduler();
-      console.log('Scheduler initialization called.');
+      const { ensureSchema } = await import('@/lib/store');
+      await ensureSchema();
     } catch (error) {
-      console.error('Failed to import or initialize scheduler:', error);
+      console.error('[tofu] schema step failed; the first request tries again:', error instanceof Error ? error.message : error);
     }
   } else {
     console.log(`Instrumentation hook running in environment: ${process.env.NEXT_RUNTIME}. Skipping server-side initialization.`);
