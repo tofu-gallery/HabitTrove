@@ -1,14 +1,19 @@
+// Modified by Tofu on 2026-10-28: the GitHub button opens this copy's own
+// source code (SOURCE_URL, AGPL-3.0 section 13) instead of upstream's
+// repository (see TOFU.md).
 'use client'
 
 import { Dialog, DialogContent, DialogHeader } from "./ui/dialog"
 import { Button } from "./ui/button"
-import { Star, History } from "lucide-react"
+import { Code, History } from "lucide-react"
 import packageJson from '../package.json'
 import { DialogTitle } from "@radix-ui/react-dialog"
 import { useTranslations } from "next-intl"
 import { Logo } from "./Logo"
 import ChangelogModal from "./ChangelogModal"
 import { useState } from "react"
+import { useAtomValue } from "jotai"
+import { serverSettingsAtom } from "@/lib/atoms"
 
 interface AboutModalProps {
   onClose: () => void
@@ -16,6 +21,8 @@ interface AboutModalProps {
 
 export default function AboutModal({ onClose }: AboutModalProps) {
   const t = useTranslations('AboutModal')
+  const tTofu = useTranslations('Tofu')
+  const { sourceUrl } = useAtomValue(serverSettingsAtom)
   const version = packageJson.version
   const [changelogOpen, setChangelogOpen] = useState(false)
 
@@ -61,13 +68,14 @@ export default function AboutModal({ onClose }: AboutModalProps) {
 
             <div className="flex justify-center">
               <a
-                href="https://github.com/dohsimpson/habittrove"
+                href={sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-tofu="source-code"
               >
                 <Button variant="outline" size="sm">
-                  <Star className="w-4 h-4 mr-2" />
-                  {t('starOnGitHubButton')}
+                  <Code className="w-4 h-4 mr-2" />
+                  {tTofu('sourceCode')}
                 </Button>
               </a>
             </div>
